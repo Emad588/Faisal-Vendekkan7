@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -11,7 +13,9 @@ import {
   Calendar,
   Sparkles,
   ChevronRight,
-  Plus
+  Plus,
+  CheckCircle2,
+  FileDown
 } from 'lucide-react';
 import { StatCard } from '@/components/dashboard/StatCard';
 import { cn } from '@/lib/utils';
@@ -31,6 +35,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { ROUTES } from '@/constants';
 
 const data = [
   { name: 'Jan', revenue: 45000, expenses: 32000 },
@@ -59,6 +64,23 @@ const recentInvoices = [
 ];
 
 export const Dashboard = () => {
+  const navigate = useNavigate();
+
+  const handleGenerateReport = () => {
+    toast.success("Strategic Report Generating", {
+      description: "Compiling real-time data into your Q2 performance summary.",
+      icon: <FileDown className="text-brand-blue" size={18} />
+    });
+  };
+
+  const handleViewLedger = () => navigate(ROUTES.INVOICES);
+  const handleAskAI = () => navigate(ROUTES.AI_ASSISTANT);
+  const handleDateFilter = () => {
+    toast.info("Temporal Filter Updated", {
+      description: "Displaying metrics for Q2 FY2026 environment."
+    });
+  };
+
   return (
     <div className="p-8 h-full flex flex-col gap-8 animate-in fade-in duration-700 bg-brand-bg overflow-auto">
       {/* Header section */}
@@ -68,11 +90,18 @@ export const Dashboard = () => {
           <p className="text-brand-muted text-sm font-medium">Real-time performance metrics for ABILIX Solutions.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="glass border-brand-border text-brand-text hover:bg-white gap-2 font-bold shadow-sm">
+          <Button 
+            onClick={handleDateFilter}
+            variant="outline" 
+            className="glass border-brand-border text-brand-text hover:bg-white gap-2 font-bold shadow-sm"
+          >
             <Calendar size={18} />
             Q2 FY2026
           </Button>
-          <Button className="bg-brand-blue hover:bg-brand-blue/90 text-white gap-2 shadow-lg shadow-brand-blue/20 px-6 font-bold">
+          <Button 
+            onClick={handleGenerateReport}
+            className="bg-brand-blue hover:bg-brand-blue/90 text-white gap-2 shadow-lg shadow-brand-blue/20 px-6 font-bold"
+          >
             <Plus size={18} />
             Generate Report
           </Button>
@@ -139,7 +168,10 @@ export const Dashboard = () => {
                 <strong>Strategic Alert:</strong> Your cash flow forecast predicts a ₹5L surplus next month. We recommend allocating ₹2L to R&D for the new AI module.
               </p>
             </div>
-            <Button className="mt-auto w-full bg-brand-blue text-white font-bold h-10 rounded-xl hover:bg-brand-blue/90 shadow-md shadow-brand-blue/10">
+            <Button 
+              onClick={handleAskAI}
+              className="mt-auto w-full bg-brand-blue text-white font-bold h-10 rounded-xl hover:bg-brand-blue/90 shadow-md shadow-brand-blue/10"
+            >
               Ask ABILIX
             </Button>
           </motion.div>
@@ -172,19 +204,23 @@ export const Dashboard = () => {
           <Card className="glass-card p-6 h-full">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-brand-muted text-xs font-bold tracking-widest uppercase">Recent Billing Activity</h3>
-              <Button variant="link" className="text-brand-blue text-xs p-0 gap-1 font-bold">
+              <Button 
+                onClick={handleViewLedger}
+                variant="link" 
+                className="text-brand-blue text-xs p-0 gap-1 font-bold"
+              >
                 View Ledger <ChevronRight size={14} />
               </Button>
             </div>
             <div className="space-y-4">
               {recentInvoices.map((invoice, idx) => (
-                <div key={idx} className="group flex items-center justify-between p-3 rounded-xl hover:bg-brand-bg transition-all border border-transparent hover:border-brand-border">
+                <div key={idx} className="group flex items-center justify-between p-3 rounded-xl hover:bg-brand-bg transition-all border border-transparent hover:border-brand-border cursor-pointer" onClick={handleViewLedger}>
                   <div className="flex items-center gap-4">
                     <Avatar className="h-10 w-10 border border-brand-border bg-white text-xs font-bold shadow-sm">
                       <AvatarFallback className="text-brand-muted">{invoice.client.substring(0, 2)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-bold text-sm text-brand-text">{invoice.client}</p>
+                      <p className="font-bold text-sm text-brand-text group-hover:text-brand-blue transition-colors">{invoice.client}</p>
                       <p className="text-[10px] text-brand-muted font-bold tracking-wider uppercase">{invoice.id}</p>
                     </div>
                   </div>

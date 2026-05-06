@@ -9,7 +9,11 @@ import {
   Calendar,
   Layers,
   Zap,
-  Target
+  Target,
+  BarChart3,
+  Search,
+  FileSearch,
+  Database
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -29,6 +33,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner';
 
 const benchmarkData = [
   { name: 'Jan', revenue: 4000, target: 3000, efficiency: 85 },
@@ -49,6 +54,26 @@ const dotData = [
 ];
 
 export const FullAnalytics = () => {
+  const handlePredictiveScan = () => {
+    toast.success("Strategic Scan Completed", {
+      description: "AI engine has projected +18% growth for Q3 based on current velocity.",
+      icon: <Zap className="text-brand-blue" size={18} />
+    });
+  };
+
+  const handleDownload = () => {
+    toast.info("Database Export Started", {
+      description: "Compiling strategic datasets into secure ZIP archive.",
+      icon: <Database className="text-brand-blue" size={18} />
+    });
+  };
+
+  const handleFullscreen = () => {
+    toast.info("Immersive View Requested", {
+      description: "Adapting visualization matrix for large-scale presentation."
+    });
+  };
+
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-700 bg-brand-bg h-full overflow-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -57,14 +82,14 @@ export const FullAnalytics = () => {
           <p className="text-brand-muted text-sm font-medium">Deep-intelligence forecasting and operational benchmarking.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Tabs defaultValue="overview" className="w-[300px]">
+          <Tabs defaultValue="overview" className="w-[300px]" onValueChange={(v) => toast.info(`View switched to ${v}`)}>
             <TabsList className="bg-white/50 backdrop-blur-sm rounded-xl p-1 h-10 border border-brand-border">
               <TabsTrigger value="overview" className="text-[10px] font-bold rounded-lg px-4 truncate h-8">Overview</TabsTrigger>
               <TabsTrigger value="predictive" className="text-[10px] font-bold rounded-lg px-4 truncate h-8">Predictive</TabsTrigger>
               <TabsTrigger value="growth" className="text-[10px] font-bold rounded-lg px-4 truncate h-8">Growth</TabsTrigger>
             </TabsList>
           </Tabs>
-          <Button variant="outline" className="glass border-brand-border h-10 w-10 p-0">
+          <Button onClick={handleFullscreen} variant="outline" className="glass border-brand-border h-10 w-10 p-0">
             <Maximize2 size={18} />
           </Button>
         </div>
@@ -120,7 +145,7 @@ export const FullAnalytics = () => {
               <h3 className="font-extrabold text-xl text-brand-text">Market Penetration</h3>
               <p className="text-xs text-brand-muted font-bold font-mono">SEGMENT VELOCITY vs MARKET CAP</p>
             </div>
-            <Button variant="outline" size="sm" className="h-8 text-[10px] font-bold border-brand-border rounded-lg">
+            <Button onClick={handleDownload} variant="outline" size="sm" className="h-8 text-[10px] font-bold border-brand-border rounded-lg">
                Download Dataset
             </Button>
           </div>
@@ -175,7 +200,10 @@ export const FullAnalytics = () => {
                      Switch to predictive mode to see AI-generated revenue projections for the next 4 quarters based on historical pipeline conversion and seasonal trends.
                   </p>
                </div>
-               <Button className="bg-brand-blue text-white font-bold h-12 px-8 rounded-xl hover:bg-brand-blue/90 shadow-lg shadow-brand-blue/20">
+               <Button 
+                onClick={handlePredictiveScan}
+                className="bg-brand-blue text-white font-bold h-12 px-8 rounded-xl hover:bg-brand-blue/90 shadow-lg shadow-brand-blue/20"
+               >
                   Run Predictive Scan
                </Button>
             </div>

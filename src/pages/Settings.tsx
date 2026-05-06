@@ -27,6 +27,12 @@ export const SettingsPage = () => {
     });
   };
 
+  const handlePurge = () => {
+    toast.warning("System Purge Initiated", {
+      description: "Authorizing deep-level deletion of legacy archive nodes."
+    });
+  };
+
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 bg-brand-bg h-full overflow-auto">
       <div className="flex items-center justify-between">
@@ -137,7 +143,10 @@ export const SettingsPage = () => {
                   <p className="font-bold text-brand-text">Purge Transaction History</p>
                   <p className="text-xs text-brand-muted">Permanently delete all records older than 7 years.</p>
                 </div>
-                <Button variant="outline" className="border-rose-200 text-rose-600 font-bold hover:bg-rose-50 py-6 h-auto">
+                <Button 
+                  onClick={handlePurge}
+                  variant="outline" className="border-rose-200 text-rose-600 font-bold hover:bg-rose-50 py-6 h-auto"
+                >
                    Execute Purge
                 </Button>
              </div>

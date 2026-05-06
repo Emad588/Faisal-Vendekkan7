@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   FileText, 
   Plus, 
@@ -9,7 +9,11 @@ import {
   Clock,
   ArrowRight,
   MoreVertical,
-  CheckCircle2
+  CheckCircle2,
+  FileSearch,
+  Copy,
+  Archive,
+  CheckCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,8 +34,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
-const quotations = [
+const initialQuotations = [
   { id: 'QT-2026-001', client: 'Nexus Digital', title: 'AI Automation Suite', amount: '₹4,50,000', date: 'May 20, 2026', validity: '15 Days', status: 'approved' },
   { id: 'QT-2026-002', client: 'Quantum Labs', title: 'Data Pipeline Design', amount: '₹12,80,000', date: 'May 22, 2026', validity: '30 Days', status: 'pending' },
   { id: 'QT-2026-003', client: 'Stellar Tech', title: 'Cloud Infrastructure Upgrade', amount: '₹3,20,000', date: 'May 24, 2026', validity: '10 Days', status: 'pending' },
@@ -40,6 +45,35 @@ const quotations = [
 ];
 
 export const QuotationsList = () => {
+  const [search, setSearch] = useState('');
+
+  const filteredQuotations = useMemo(() => {
+    return initialQuotations.filter(qt => 
+      qt.client.toLowerCase().includes(search.toLowerCase()) ||
+      qt.id.toLowerCase().includes(search.toLowerCase()) ||
+      qt.title.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [search]);
+
+  const handleAction = (action: string, id: string) => {
+    toast.success(`Proposal Action: ${action}`, {
+      description: `Targeting estimate ${id} for system processing.`,
+      icon: <FileCheck className="text-brand-blue" size={18} />
+    });
+  };
+
+  const handleCreate = () => {
+    toast.success("Strategic Proposal Creator", {
+      description: "Initializing your customized quotation environment."
+    });
+  };
+
+  const handleTemplates = () => {
+    toast.info("Strategic Templates", {
+      description: "Loading industry-specific document frameworks."
+    });
+  };
+
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 bg-brand-bg h-full overflow-auto">
       <div className="flex items-center justify-between">
@@ -48,10 +82,16 @@ export const QuotationsList = () => {
           <p className="text-brand-muted text-sm font-medium">Create and manage professional estimates for project proposals.</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" className="glass border-brand-border text-brand-text h-11 px-6 font-bold shadow-sm">
+          <Button 
+            onClick={handleTemplates}
+            variant="outline" className="glass border-brand-border text-brand-text h-11 px-6 font-bold shadow-sm"
+          >
             Templates
           </Button>
-          <Button className="bg-brand-blue hover:bg-brand-blue/90 text-white gap-2 shadow-lg shadow-brand-blue/20 px-6 font-bold h-11">
+          <Button 
+            onClick={handleCreate}
+            className="bg-brand-blue hover:bg-brand-blue/90 text-white gap-2 shadow-lg shadow-brand-blue/20 px-6 font-bold h-11"
+          >
             <Plus size={18} />
             Create Quotation
           </Button>
@@ -97,11 +137,16 @@ export const QuotationsList = () => {
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted" size={18} />
           <Input 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="Search proposals, clients, or service types..." 
             className="bg-white border-brand-border h-11 pl-10 focus-visible:ring-brand-blue font-medium"
           />
         </div>
-        <Button variant="outline" size="icon" className="glass border-brand-border h-11 w-11">
+        <Button 
+          onClick={() => toast.info("Filter Matrix Enabled")}
+          variant="outline" size="icon" className="glass border-brand-border h-11 w-11"
+        >
           <Filter size={18} />
         </Button>
       </div>
@@ -119,7 +164,7 @@ export const QuotationsList = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {quotations.map((qt) => (
+            {filteredQuotations.map((qt) => (
               <TableRow key={qt.id} className="border-brand-border hover:bg-brand-bg group transition-colors">
                 <TableCell className="py-6 pl-8">
                   <div className="flex items-center gap-3">
@@ -152,7 +197,10 @@ export const QuotationsList = () => {
                 <TableCell className="text-right pr-8">
                   <div className="flex items-center justify-end gap-2">
                     {qt.status === 'approved' && (
-                      <Button size="sm" variant="outline" className="h-8 text-[10px] font-bold border-emerald-200 text-emerald-600 hover:bg-emerald-50 gap-1 rounded-lg">
+                      <Button 
+                        onClick={() => handleAction('Convert', qt.id)}
+                        size="sm" variant="outline" className="h-8 text-[10px] font-bold border-emerald-200 text-emerald-600 hover:bg-emerald-50 gap-1 rounded-lg"
+                      >
                         <ArrowRight size={12} /> Convert to Invoice
                       </Button>
                     )}
@@ -163,11 +211,18 @@ export const QuotationsList = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="bg-white border-brand-border text-brand-text">
-                        <DropdownMenuItem className="font-medium">View Proposal</DropdownMenuItem>
-                        <DropdownMenuItem className="font-medium">Edit Details</DropdownMenuItem>
-                        <DropdownMenuItem className="font-medium">Duplicate</DropdownMenuItem>
-                        <DropdownMenuItem className="font-medium text-emerald-600">Mark Approved</DropdownMenuItem>
-                        <DropdownMenuItem className="font-medium text-rose-500">Archive</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleAction('View', qt.id)} className="font-medium gap-2">
+                          <FileSearch size={14} className="text-brand-blue" /> View Proposal
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleAction('Duplicate', qt.id)} className="font-medium gap-2">
+                          <Copy size={14} className="text-brand-blue" /> Duplicate
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleAction('Approve', qt.id)} className="font-medium text-emerald-600 gap-2">
+                          <CheckCircle size={14} /> Mark Approved
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleAction('Archive', qt.id)} className="font-medium text-rose-500 gap-2">
+                          <Archive size={14} /> Archive
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>

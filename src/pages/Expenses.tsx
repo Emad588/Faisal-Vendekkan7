@@ -9,7 +9,8 @@ import {
   PieChart as PieIcon,
   Tag,
   Calendar,
-  Receipt
+  Receipt,
+  Scan
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -27,6 +28,8 @@ import {
   YAxis,
   CartesianGrid
 } from 'recharts';
+import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
 const expenseCategories = [
   { name: 'Marketing', value: 4500, color: '#3B82F6' },
@@ -45,19 +48,50 @@ const transactions = [
 ];
 
 export const Expenses = () => {
+  const handleScan = () => {
+    toast.info("OCR Engine Initialized", {
+      description: "Ready to parse receipt metadata. Please upload clear document.",
+      icon: <Scan className="text-brand-blue" size={18} />
+    });
+  };
+
+  const handleNewEntry = () => {
+    toast.success("Manual Ledger Entry", {
+      description: "Fill the expense parameters to sync with your burn forecast."
+    });
+  };
+
+  const handleLedgerAction = () => {
+    toast.info("Ledger Archives", {
+      description: "Loading historical financial nodes from 2025 archive."
+    });
+  };
+
+  const handleFilterToggle = () => {
+    toast.info("Filter Matrix Enabled", {
+      description: "You can now refine the ledger by merchant, category, or amount."
+    });
+  };
+
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 bg-brand-bg h-full overflow-auto">
        <div className="flex items-center justify-between">
-        <div>
+         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-brand-text mb-1">Expense Tracking</h1>
           <p className="text-brand-muted text-sm font-medium">Categorized view of company overheads and recurring outflows.</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" className="glass border-brand-border text-brand-text gap-2 font-bold px-6 h-11">
+          <Button 
+            onClick={handleScan}
+            variant="outline" className="glass border-brand-border text-brand-text gap-2 font-bold px-6 h-11"
+          >
             <Receipt size={18} />
             Scan Receipt
           </Button>
-          <Button className="bg-brand-blue hover:bg-brand-blue/90 text-white gap-2 shadow-lg shadow-brand-blue/20 px-6 font-bold h-11">
+          <Button 
+            onClick={handleNewEntry}
+            className="bg-brand-blue hover:bg-brand-blue/90 text-white gap-2 shadow-lg shadow-brand-blue/20 px-6 font-bold h-11"
+          >
             <Plus size={18} />
             New Entry
           </Button>
@@ -129,8 +163,8 @@ export const Expenses = () => {
           <CardHeader className="flex flex-row items-center justify-between border-b border-brand-border p-6">
             <CardTitle className="text-lg font-extrabold text-brand-text">Transaction Ledger</CardTitle>
             <div className="flex items-center gap-2">
-              <Input placeholder="Filter ledger..." className="h-9 w-48 bg-brand-bg border-brand-border text-xs focus-visible:ring-brand-blue" />
-              <Button size="icon" variant="ghost" className="h-9 w-9 text-brand-muted hover:text-brand-blue"><Filter size={14} /></Button>
+              <Input placeholder="Filter ledger..." className="h-9 w-48 bg-brand-bg border-brand-border text-xs focus-visible:ring-brand-blue px-3" />
+              <Button onClick={handleFilterToggle} size="icon" variant="ghost" className="h-9 w-9 text-brand-muted hover:text-brand-blue"><Filter size={14} /></Button>
             </div>
           </CardHeader>
           <CardContent className="p-0">
@@ -169,7 +203,7 @@ export const Expenses = () => {
               ))}
             </div>
             <div className="p-6 text-center border-t border-brand-bg">
-              <Button variant="ghost" className="text-[11px] text-brand-blue font-bold tracking-widest uppercase hover:bg-brand-bg">
+              <Button onClick={handleLedgerAction} variant="ghost" className="text-[11px] text-brand-blue font-bold tracking-widest uppercase hover:bg-brand-bg">
                 Load Historical Archives
               </Button>
             </div>
@@ -179,4 +213,3 @@ export const Expenses = () => {
     </div>
   );
 };
-

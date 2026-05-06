@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { 
   Users, 
   Plus, 
@@ -9,7 +9,10 @@ import {
   Phone, 
   Building2,
   ChevronRight,
-  ExternalLink
+  ExternalLink,
+  UserPlus,
+  ShieldCheck,
+  ClipboardList
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,8 +33,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
-const clients = [
+const initialClients = [
   { id: '1', name: 'Nexus Digital', company: 'Nexus Digital LLC', email: 'hello@nexus.com', phone: '+1 234 567 890', status: 'active', revenue: '$45,200', industry: 'E-commerce' },
   { id: '2', name: 'Quantum Labs', company: 'Quantum Research Group', email: 'ops@quantum.io', phone: '+1 987 654 321', status: 'active', revenue: '$72,800', industry: 'Fintech' },
   { id: '3', name: 'Stellar Solutions', company: 'Stellar Tech', email: 'contact@stellar.tech', phone: '+1 555 012 345', status: 'inactive', revenue: '$12,400', industry: 'SaaS' },
@@ -40,7 +45,28 @@ const clients = [
 ];
 
 export const ClientsList = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [search, setSearch] = useState('');
+
+  const filteredClients = useMemo(() => {
+    return initialClients.filter(c => 
+      c.name.toLowerCase().includes(search.toLowerCase()) ||
+      c.company.toLowerCase().includes(search.toLowerCase()) ||
+      c.email.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [search]);
+
+  const handleCreate = () => {
+    toast.success("Client Onboarding Initialized", {
+      description: "Provisioning dynamic profile for new enterprise node.",
+      icon: <UserPlus className="text-brand-blue" size={18} />
+    });
+  };
+
+  const handleAction = (action: string, clientName: string) => {
+    toast.info(`Strategic Action: ${action}`, {
+      description: `Execution sequence started for ${clientName}.`
+    });
+  };
 
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 bg-brand-bg h-full overflow-auto">
@@ -49,7 +75,10 @@ export const ClientsList = () => {
           <h1 className="text-3xl font-extrabold tracking-tight text-brand-text mb-1">Portfolio Relations</h1>
           <p className="text-brand-muted text-sm font-medium">Detailed registry of enterprise partners and strategic clients.</p>
         </div>
-        <Button className="bg-brand-blue hover:bg-brand-blue/90 text-white gap-2 shadow-lg shadow-brand-blue/20 px-6 font-bold h-11">
+        <Button 
+          onClick={handleCreate}
+          className="bg-brand-blue hover:bg-brand-blue/90 text-white gap-2 shadow-lg shadow-brand-blue/20 px-6 font-bold h-11"
+        >
           <Plus size={18} />
           New Client Profile
         </Button>
@@ -59,13 +88,16 @@ export const ClientsList = () => {
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-muted" size={18} />
           <Input 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, company, or email..." 
             className="bg-white border-brand-border h-11 pl-10 focus-visible:ring-brand-blue font-medium"
           />
         </div>
-        <Button variant="outline" className="glass border-brand-border h-11 px-4 gap-2 text-brand-text font-bold">
+        <Button 
+          onClick={() => toast.info("Filter Matrix Opened", { description: "You can now refine the portfolio by segment, LTV, or activity." })}
+          variant="outline" className="glass border-brand-border h-11 px-4 gap-2 text-brand-text font-bold"
+        >
           <Filter size={18} /> Filters
         </Button>
       </div>
@@ -82,7 +114,7 @@ export const ClientsList = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {clients.map((client) => (
+            {filteredClients.map((client) => (
               <TableRow key={client.id} className="border-brand-border hover:bg-brand-bg group transition-all duration-200">
                 <TableCell className="py-6 pl-8">
                   <div className="flex items-center gap-4">
@@ -114,7 +146,10 @@ export const ClientsList = () => {
                 </TableCell>
                 <TableCell className="text-right pr-8">
                   <div className="flex items-center justify-end gap-2">
-                    <Button variant="ghost" size="icon" className="h-9 w-9 text-brand-muted hover:text-brand-blue hover:bg-brand-bg transition-colors rounded-xl border border-transparent hover:border-brand-border">
+                    <Button 
+                      onClick={() => handleAction('Explore', client.name)}
+                      variant="ghost" size="icon" className="h-9 w-9 text-brand-muted hover:text-brand-blue hover:bg-brand-bg transition-colors rounded-xl border border-transparent hover:border-brand-border"
+                    >
                       <ExternalLink size={16} />
                     </Button>
                     <DropdownMenu>
@@ -124,10 +159,13 @@ export const ClientsList = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="bg-white border-brand-border text-brand-text">
-                        <DropdownMenuItem className="font-bold text-xs">Edit Intelligence</DropdownMenuItem>
-                        <DropdownMenuItem className="font-bold text-xs">Ledger Insights</DropdownMenuItem>
-                        <DropdownMenuItem className="font-bold text-xs">Append Documentation</DropdownMenuItem>
-                        <DropdownMenuItem className="text-rose-500 font-bold text-xs">Suspend Access</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleAction('Edit', client.name)} className="font-bold text-xs gap-2">
+                           <ShieldCheck size={14} className="text-brand-blue" /> Edit Intelligence
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleAction('Ledger', client.name)} className="font-bold text-xs gap-2">
+                           <ClipboardList size={14} className="text-brand-blue" /> Ledger Insights
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleAction('Suspend', client.name)} className="text-rose-500 font-bold text-xs">Suspend Access</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -139,7 +177,7 @@ export const ClientsList = () => {
       </Card>
       
       <div className="flex items-center justify-between py-4 border-t border-brand-border">
-        <p className="text-xs text-brand-muted font-bold uppercase tracking-widest">Showing 5 of 24 strategic nodes</p>
+        <p className="text-xs text-brand-muted font-bold uppercase tracking-widest">Showing {filteredClients.length} of 24 strategic nodes</p>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" className="border-brand-border h-9 px-4 font-bold text-xs rounded-xl" disabled>Previous</Button>
           <Button variant="outline" size="sm" className="border-brand-border h-9 px-4 font-bold text-xs rounded-xl">Next</Button>
@@ -148,4 +186,3 @@ export const ClientsList = () => {
     </div>
   );
 };
-

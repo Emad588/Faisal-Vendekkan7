@@ -9,7 +9,8 @@ import {
   Filter,
   CheckCircle2,
   AlertCircle,
-  BanknoteIcon
+  BanknoteIcon,
+  FileDown
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -29,6 +30,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { toast } from 'sonner';
 
 const earningsData = [
   { name: 'Jan', amount: 450000, expenses: 120000 },
@@ -47,6 +49,25 @@ const serviceMix = [
 ];
 
 export const IncomeAnalytics = () => {
+  const handleExport = () => {
+    toast.success("PDF Ledger Generated", {
+      description: "Compiling settlement cycles into enterprise-grade documentation.",
+      icon: <FileDown size={18} />
+    });
+  };
+
+  const handleDeepDive = () => {
+    toast.info("Strategic Deep Dive", {
+      description: "Initializing multi-dimensional service mix analysis."
+    });
+  };
+
+  const handleFilter = () => {
+    toast.info("Temporal Scope Adjusted", {
+      description: v => `Viewing metrics for FY 2026 environment.`
+    });
+  };
+
   return (
     <div className="p-8 space-y-8 animate-in fade-in duration-500 bg-brand-bg h-full overflow-auto">
       <div className="flex items-center justify-between">
@@ -55,38 +76,38 @@ export const IncomeAnalytics = () => {
           <p className="text-brand-muted text-sm font-medium">Detailed breakdown of revenue flows, client settlements, and net margins.</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline" className="glass border-brand-border text-brand-text gap-2 font-bold px-6 shadow-sm">
+          <Button onClick={handleFilter} variant="outline" className="glass border-brand-border text-brand-text gap-2 font-bold px-6 shadow-sm">
             <Calendar size={18} /> FY 2026
           </Button>
-          <Button className="bg-brand-blue hover:bg-brand-blue/90 text-white gap-2 shadow-lg shadow-brand-blue/20 px-6 font-bold">
+          <Button onClick={handleExport} className="bg-brand-blue hover:bg-brand-blue/90 text-white gap-2 shadow-lg shadow-brand-blue/20 px-6 font-bold">
             <Download size={18} /> Export PDF
           </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="glass-card p-6 border-l-4 border-emerald-500">
+        <Card className="glass-card p-6 border-l-4 border-emerald-500 cursor-pointer hover:bg-white/50 transition-all" onClick={() => toast.info("Revenue velocity remains in high-growth quadrant.")}>
           <p className="text-[10px] uppercase font-bold text-brand-muted tracking-widest mb-1">Settled Income</p>
           <p className="text-3xl font-extrabold text-brand-text leading-none">₹32,45,000</p>
           <div className="mt-4 flex items-center gap-1 text-[10px] text-emerald-600 font-bold uppercase">
              <ArrowUpRight size={14} /> +12% from Q1
           </div>
         </Card>
-        <Card className="glass-card p-6 border-l-4 border-brand-blue">
+        <Card className="glass-card p-6 border-l-4 border-brand-blue cursor-pointer hover:bg-white/50 transition-all" onClick={() => toast.info("Smart ticketing optimized for maximum margin.")}>
           <p className="text-[10px] uppercase font-bold text-brand-muted tracking-widest mb-1">Average Ticket</p>
           <p className="text-3xl font-extrabold text-brand-text leading-none">₹1,82,450</p>
           <div className="mt-4 flex items-center gap-1 text-[10px] text-brand-blue font-bold uppercase tracking-tighter">
              High Val. Service Priority
           </div>
         </Card>
-        <Card className="glass-card p-6 border-l-4 border-amber-500">
+        <Card className="glass-card p-6 border-l-4 border-amber-500 cursor-pointer hover:bg-white/50 transition-all" onClick={() => toast.warning("15 Invoices require collection audit.")}>
           <p className="text-[10px] uppercase font-bold text-brand-muted tracking-widest mb-1">Outstanding</p>
           <p className="text-3xl font-extrabold text-brand-text leading-none">₹8,12,000</p>
           <div className="mt-4 flex items-center gap-1 text-[10px] text-amber-600 font-bold uppercase underline">
              View 15 Aging Invoices
           </div>
         </Card>
-        <Card className="glass-card p-6 border-l-4 border-indigo-500">
+        <Card className="glass-card p-6 border-l-4 border-indigo-500 cursor-pointer hover:bg-white/50 transition-all" onClick={() => toast.info("Tax provisions locked for Q2 filing.")}>
           <p className="text-[10px] uppercase font-bold text-brand-muted tracking-widest mb-1">Tax Provision</p>
           <p className="text-3xl font-extrabold text-brand-text leading-none">₹4,20,000</p>
           <div className="mt-4 flex items-center gap-1 text-[10px] text-indigo-600 font-bold uppercase">
@@ -102,7 +123,7 @@ export const IncomeAnalytics = () => {
               <h3 className="font-bold text-lg text-brand-text">Revenue Velocity</h3>
               <p className="text-xs text-brand-muted font-medium">Income vs Realized Net Profit (Monthly)</p>
             </div>
-            <Tabs defaultValue="6m" className="w-[180px]">
+            <Tabs defaultValue="6m" className="w-[180px]" onValueChange={(v) => toast.info(`Timeframe: ${v}`)}>
               <TabsList className="bg-brand-bg rounded-xl p-1 h-9 border border-brand-border">
                 <TabsTrigger value="3m" className="text-[10px] font-bold rounded-lg h-7">3M</TabsTrigger>
                 <TabsTrigger value="6m" className="text-[10px] font-bold rounded-lg h-7">6M</TabsTrigger>
@@ -187,7 +208,7 @@ export const IncomeAnalytics = () => {
             </div>
             <div className="space-y-3 mt-4">
               {serviceMix.map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between group cursor-pointer hover:bg-brand-bg p-2 rounded-xl transition-all">
+                <div key={idx} className="flex items-center justify-between group cursor-pointer hover:bg-brand-bg p-2 rounded-xl transition-all" onClick={handleDeepDive}>
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
                     <span className="text-xs font-bold text-brand-text">{item.name}</span>
@@ -197,7 +218,7 @@ export const IncomeAnalytics = () => {
               ))}
             </div>
           </div>
-          <Button className="mt-8 w-full glass border-brand-border text-brand-text font-bold h-11 hover:bg-brand-bg shadow-sm">
+          <Button onClick={handleDeepDive} className="mt-8 w-full glass border-brand-border text-brand-text font-bold h-11 hover:bg-brand-bg shadow-sm">
             Service Deep Dive
           </Button>
         </Card>
