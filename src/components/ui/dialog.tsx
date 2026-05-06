@@ -13,23 +13,17 @@ function Dialog({ ...props }: DialogPrimitive.Root.Props) {
 
 function DialogTrigger({
   asChild,
+  render,
   children,
   ...props
 }: DialogPrimitive.Trigger.Props & { asChild?: boolean }) {
-  const { asChild: _asChild, ...restProps } = props as any;
-  if (asChild) {
-    return (
-      <DialogPrimitive.Trigger
-        data-slot="dialog-trigger"
-        render={children as React.ReactElement}
-        {...restProps}
-      />
-    )
-  }
-
   return (
-    <DialogPrimitive.Trigger data-slot="dialog-trigger" {...restProps}>
-      {children}
+    <DialogPrimitive.Trigger
+      data-slot="dialog-trigger"
+      render={asChild ? (children as React.ReactElement) : render}
+      {...props}
+    >
+      {asChild ? undefined : children}
     </DialogPrimitive.Trigger>
   )
 }

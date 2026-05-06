@@ -45,30 +45,18 @@ function Button({
   variant = "default",
   size = "default",
   asChild,
+  render,
   children,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants> & { asChild?: boolean }) {
-  const { asChild: _asChild, ...restProps } = props as any;
-  const finalProps = { ...restProps };
-
-  if (asChild) {
-    return (
-      <ButtonPrimitive
-        data-slot="button"
-        className={cn(buttonVariants({ variant, size, className }))}
-        render={children as React.ReactElement}
-        {...finalProps}
-      />
-    )
-  }
-
   return (
     <ButtonPrimitive
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
-      {...finalProps}
+      render={asChild ? children : render}
+      {...props}
     >
-      {children}
+      {asChild ? undefined : children}
     </ButtonPrimitive>
   )
 }
