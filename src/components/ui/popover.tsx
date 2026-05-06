@@ -14,18 +14,19 @@ function PopoverTrigger({
   children,
   ...props
 }: PopoverPrimitive.Trigger.Props & { asChild?: boolean }) {
+  const { asChild: _asChild, ...restProps } = props as any;
   if (asChild) {
     return (
       <PopoverPrimitive.Trigger
         data-slot="popover-trigger"
         render={children as React.ReactElement}
-        {...props}
+        {...restProps}
       />
     )
   }
 
   return (
-    <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props}>
+    <PopoverPrimitive.Trigger data-slot="popover-trigger" {...restProps}>
       {children}
     </PopoverPrimitive.Trigger>
   )

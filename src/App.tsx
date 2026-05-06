@@ -19,10 +19,10 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ROUTES, NAVIGATION_ITEMS } from '@/constants';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Toaster } from '@/components/ui/sonner';
+import { Button } from '@/components/ui/button.tsx';
+import { ScrollArea } from '@/components/ui/scroll-area.tsx';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar.tsx';
+import { Toaster } from '@/components/ui/sonner.tsx';
 
 // Real Pages
 import { Dashboard } from '@/pages/Dashboard';
